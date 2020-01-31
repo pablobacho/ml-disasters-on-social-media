@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Twitter disaster detector Web App</title>
+        <meta charset="utf-8">
+        <meta name="viewport"  content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <script>
+         "use strict";
+         function submitForm(oFormElement) {
+             var xhr = new XMLHttpRequest();
+             xhr.onload = function() {
+                 var result;
+                 if(xhr.readyState == 4 && xhr.status == 200) {
+                    var debugElement = document.getElementById('debug');
+                    var myObj = JSON.parse(xhr.responseText);
+                    debugElement.innerHTML = JSON.stringify(myObj);
+                    var result = myObj[0].label[0];
+                 }
+                 var resultElement = document.getElementById('result');
+                 if (result === "__label__1") {
+                     resultElement.className = 'bg-danger';
+                     resultElement.innerHTML = 'This tweet is about a DISASTER!';
+                 } else {
+                     resultElement.className = 'bg-success';
+                     resultElement.innerHTML = 'This tweet is NOT about a disaster';
+                 }
+             }
+             xhr.open (oFormElement.method, oFormElement.action, true);
+             var tweet = document.getElementById('tweet_text');
+             xhr.send (tweet.value);
+             return false;
+         }
+        </script>
+
+    </head>
+    <body>
+
+        <div class="container">
+            <h1>Is your tweet about a disaster or not?</h1>
+            <p>Enter your tweet below and click submit to find out...</p>
+            <form method="POST"
+                  action="https://fhy1l7gwl4.execute-api.eu-west-1.amazonaws.com/udacity"
+                  onsubmit="return submitForm(this);" >                     <!-- HERE IS WHERE YOU NEED TO ENTER THE API URL -->
+                <div class="form-group">
+                    <label for="tweet">Tweet content:</label>
+                    <textarea class="form-control"  rows="5" id="tweet_text">Please paste the tweet content here.</textarea>
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <h1 class="bg-success" id="result"></h1>
+            <p id="debug"></p>
+        </div>
+    </body>
+</html>
